@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moral Quest — Misi Kejujuran</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07142d; --panel:rgba(13,30,62,.78); --line:rgba(145,205,255,.20);
+  --cyan:#67e8f9; --violet:#a78bfa; --green:#5eead4; --gold:#facc15;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:"Nunito",sans-serif;background:#07142d;color:#f8fbff}
+body{overflow-x:hidden}
+h1,h2,h3,.brand{font-family:"Baloo 2",sans-serif}
+button{font-family:inherit}
+#app{min-height:100vh;position:relative;overflow:hidden;background:
+ radial-gradient(circle at 15% 10%,rgba(103,232,249,.13),transparent 28%),
+ radial-gradient(circle at 88% 18%,rgba(167,139,250,.14),transparent 30%),
+ linear-gradient(145deg,#07142d,#0a1737 55%,#10113a)}
+.grid-bg{position:fixed;inset:0;pointer-events:none;opacity:.20;background-image:linear-gradient(rgba(103,232,249,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(103,232,249,.07) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,#000,transparent 90%)}
+.orb{position:fixed;border-radius:50%;filter:blur(35px);pointer-events:none;opacity:.24;animation:float 8s ease-in-out infinite}
+.orb.a{width:190px;height:190px;background:#22d3ee;top:12%;left:-60px}
+.orb.b{width:230px;height:230px;background:#8b5cf6;right:-80px;bottom:10%;animation-delay:-3s}
+@keyframes float{50%{transform:translateY(-22px) translateX(15px)}}
+.glass{background:linear-gradient(145deg,rgba(18,39,78,.78),rgba(8,22,48,.72));border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter:blur(18px)}
+.glow{box-shadow:0 0 28px rgba(103,232,249,.14)}
+.neon{color:var(--cyan);text-shadow:0 0 20px rgba(103,232,249,.35)}
+.btn{transition:.2s ease;transform:translateY(0);position:relative;overflow:hidden}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:linear-gradient(135deg,#22d3ee,#6366f1);box-shadow:0 10px 30px rgba(34,211,238,.20)}
+.btn-secondary{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+.option{transition:.2s ease;border:1px solid rgba(145,205,255,.18);background:rgba(255,255,255,.045)}
+.option:hover{transform:translateX(4px);border-color:rgba(103,232,249,.65);background:rgba(103,232,249,.08)}
+.option.correct{border-color:#34d399;background:rgba(52,211,153,.14);box-shadow:0 0 25px rgba(52,211,153,.13)}
+.option.wrong{border-color:#fb7185;background:rgba(251,113,133,.12)}
+.disabled{pointer-events:none}
+.fade{animation:fade .38s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.pop{animation:pop .45s ease}
+@keyframes pop{0%{transform:scale(.82);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+.shake{animation:shake .35s ease}
+@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+.progress-line{height:7px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#22d3ee,#a78bfa);box-shadow:0 0 16px rgba(103,232,249,.35);transition:width .5s ease}
+.node{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.28);background:#13264b;transition:.35s}
+.node.done{background:#67e8f9;border-color:#67e8f9;box-shadow:0 0 15px rgba(103,232,249,.55)}
+.node.current{background:#a78bfa;border-color:#fff;box-shadow:0 0 18px rgba(167,139,250,.7);transform:scale(1.3)}
+.scene{min-height:245px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:
+ radial-gradient(circle at 50% 15%,rgba(103,232,249,.10),transparent 35%),
+ linear-gradient(180deg,rgba(12,33,67,.9),rgba(5,19,42,.95))}
+.scene .stars{position:absolute;inset:0;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:58px 58px;opacity:.15}
+.character{font-size:72px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35))}
+.object{font-size:54px}
+.speech{background:#f8fbff;color:#0b1835;border-radius:18px;padding:10px 15px;font-weight:800;box-shadow:0 10px 24px rgba(0,0,0,.25);position:relative}
+.speech:after{content:"";position:absolute;left:22px;bottom:-9px;border:9px solid transparent;border-top-color:#f8fbff;border-bottom:0}
+.meter{height:12px;background:rgba(255,255,255,.09);border-radius:999px;overflow:hidden}
+.meter-fill{height:100%;background:linear-gradient(90deg,#34d399,#67e8f9,#a78bfa);transition:width .45s ease}
+.toast{position:fixed;right:20px;bottom:20px;z-index:50}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+.confetti i{position:absolute;width:9px;height:16px;top:-30px;animation:fall 2.8s linear forwards}
+@keyframes fall{to{transform:translate3d(var(--x),110vh,0) rotate(720deg);opacity:0}}
+.modal{position:fixed;inset:0;background:rgba(2,8,23,.72);backdrop-filter:blur(10px);z-index:40;display:flex;align-items:center;justify-content:center;padding:20px}
+.star{font-size:46px;display:inline-block;opacity:.25;filter:grayscale(1);transition:.3s}
+.star.on{opacity:1;filter:none;animation:starIn .6s ease}
+@keyframes starIn{0%{transform:scale(.2) rotate(-25deg)}70%{transform:scale(1.18) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+.smallcaps{letter-spacing:.16em;text-transform:uppercase}
+@media(max-width:720px){
+ .character{font-size:54px}.object{font-size:42px}.scene{min-height:210px}
+ .topstats{grid-template-columns:1fr 1fr}.hide-mobile{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="grid-bg"></div><div class="orb a"></div><div class="orb b"></div>
+  <div id="screen"></div>
+</div>
+
+<script>
+const questions = [
+{
+ id:1, focus:"SP 10.3", type:"Kepentingan kejujuran",
+ scene:"wallet",
+ title:"Dompet di kawasan sekolah",
+ situation:"Amir menjumpai sebuah dompet di kawasan sekolah. Di dalam dompet itu terdapat wang dan kad pengenalan.",
+ question:"Apakah tindakan yang menunjukkan amalan jujur?",
+ options:[
+  "Mengambil wang tersebut dan menyimpan dompet.",
+  "Menyerahkan dompet kepada guru untuk mencari pemiliknya.",
+  "Memberikan dompet kepada kawan.",
+  "Membiarkan dompet tersebut di tempat asal."
+ ], answer:1,
+ feedback:"Kejujuran membantu menjaga hak orang lain dan mewujudkan kepercayaan dalam masyarakat.",
+ reflection:"Jika kamu menjumpai barang orang lain, apakah tindakan yang patut kamu lakukan?"
+},
+{
+ id:2, focus:"SP 10.3", type:"Kepentingan kepercayaan",
+ scene:"book",
+ title:"Janji memulangkan buku",
+ situation:"Siti berjanji kepada rakannya untuk memulangkan buku yang dipinjam pada hari Isnin.",
+ question:"Apakah kepentingan bersikap jujur dan menepati janji?",
+ options:[
+  "Orang lain lebih mudah mempercayai kita.",
+  "Kita boleh mengelakkan semua tanggungjawab.",
+  "Kita boleh mendapatkan lebih banyak barang.",
+  "Orang lain akan takut kepada kita."
+ ], answer:0,
+ feedback:"Kejujuran dapat membina kepercayaan antara anggota masyarakat.",
+ reflection:"Bagaimanakah perasaan kamu apabila seseorang menepati janjinya kepada kamu?"
+},
+{
+ id:3, focus:"SP 10.3", type:"Urusan harian",
+ scene:"canteen",
+ title:"Baki wang di kantin",
+ situation:"Seorang murid membeli makanan di kantin. Penjual tersilap memberikan baki wang lebih.",
+ question:"Mengapakah murid itu perlu memulangkan wang yang terlebih?",
+ options:[
+  "Supaya dapat pujian daripada kawan.",
+  "Supaya dapat membeli makanan lain.",
+  "Kerana kejujuran menghormati hak orang lain.",
+  "Kerana takut dimarahi oleh guru."
+ ], answer:2,
+ feedback:"Amalan jujur menunjukkan kita menghormati hak orang lain dan membantu mewujudkan hubungan yang baik dalam masyarakat.",
+ reflection:"Apakah kebaikan apabila kita menjaga hak orang lain?"
+},
+{
+ id:4, focus:"SP 10.4", type:"Perasaan",
+ scene:"teacher",
+ title:"Berani bercakap benar",
+ situation:"Farah secara tidak sengaja memecahkan pasu di kawasan sekolah. Dia memberitahu guru tentang perkara tersebut walaupun berasa takut.",
+ question:"Apakah perasaan yang sesuai apabila Farah berani bercakap benar?",
+ options:[
+  "Bangga dan lega kerana telah berkata benar.",
+  "Marah kerana terpaksa mengaku.",
+  "Gembira kerana pasu itu rosak.",
+  "Tidak peduli terhadap perkara tersebut."
+ ], answer:0,
+ feedback:"Bersikap jujur boleh menyebabkan seseorang berasa lega, tenang dan bangga kerana melakukan perkara yang betul.",
+ reflection:"Jika kamu berada dalam situasi Farah, apakah perasaan kamu selepas berkata benar?"
+},
+{
+ id:5, focus:"SP 10.3", type:"Membuat pertimbangan",
+ scene:"friend",
+ title:"Rahsia tentang barang orang lain",
+ situation:"Rakan kamu memberitahu bahawa dia telah mengambil barang milik orang lain tanpa kebenaran. Dia meminta kamu supaya merahsiakannya.",
+ question:"Apakah tindakan yang paling menunjukkan kejujuran?",
+ options:[
+  "Merahsiakannya supaya tidak bergaduh.",
+  "Menyokong tindakan rakan.",
+  "Menasihati rakan supaya memulangkan barang tersebut dan bercakap benar.",
+  "Menyebarkan cerita tersebut kepada semua murid."
+ ], answer:2,
+ feedback:"Kejujuran membantu kita membuat tindakan yang betul dan menjaga kepercayaan dalam masyarakat.",
+ reflection:"Mengapa kita perlu menasihati rakan untuk membetulkan kesalahan dengan cara yang baik?"
+},
+{
+ id:6, focus:"SP 10.4", type:"Ekspresi perasaan", multi:true,
+ scene:"return",
+ title:"Barang kembali kepada pemilik",
+ situation:"Seorang murid memulangkan barang yang dijumpainya kepada pemilik.",
+ question:"Bagaimanakah perasaan kamu jika kamu berjaya melakukan perkara yang jujur seperti ini?",
+ options:["❤️ Gembira","😌 Lega","😊 Bangga","😟 Takut","😡 Marah"],
+ answer:[0,1,2],
+ feedback:"Perasaan positif seperti gembira, lega dan bangga boleh dirasai apabila kita melakukan amalan yang jujur.",
+ reflection:"Pilih semua perasaan yang sesuai. Setiap orang mungkin mempunyai perasaan yang berbeza."
+},
+{
+ id:7, focus:"SP 10.3 + SP 10.4", type:"Misi akhir",
+ scene:"neighbour",
+ title:"Wang tercicir di kawasan kejiranan",
+ situation:"Kamu sedang berada di kawasan kejiranan. Kamu ternampak seorang jiran tercicir wang ketika berjalan. Pada masa yang sama, tiada orang lain melihat kejadian tersebut.",
+ question:"Mengapakah kamu perlu memulangkan wang tersebut?",
+ options:[
+  "Supaya jiran tersebut memberikan hadiah.",
+  "Supaya orang lain memuji kamu.",
+  "Kerana kejujuran dapat membina kepercayaan dan keharmonian masyarakat.",
+  "Supaya kamu tidak berasa bosan."
+ ], answer:2,
+ feedback:"Kejujuran penting kerana dapat membina kepercayaan, menghormati hak orang lain dan mewujudkan hubungan yang baik dalam masyarakat.",
+ reflection:"Apakah perasaan kamu selepas memilih untuk memulangkan wang tersebut?"
+}
+];
+
+let state = {started:false,index:0,score:0,combo:1,streak:0,bestCombo:1,energy:100,answers:[],locked:false};
+const $=s=>document.querySelector(s);
+
+function sound(kind){
+ try{
+  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+  const c=new C(),o=c.createOscillator(),g=c.createGain();
+  const map={click:[420,.05,.04],correct:[660,.12,.07],wrong:[180,.16,.05],combo:[820,.18,.07],win:[520,.5,.08],star:[980,.18,.06],transition:[300,.08,.03]};
+  const [f,d,v]=map[kind]||map.click;o.frequency.value=f;o.type=kind==="wrong"?"sine":"triangle";
+  g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);
+  o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d);
+ }catch(e){}
+}
+
+function sceneHTML(q){
+ const scenes={
+ wallet:["🏫","🧒","👛","📇","🔎","Amir menemui dompet"],
+ book:["📚","👧","📖","🤝","🗓️","Siti menjaga janji"],
+ canteen:["🍜","🧒","💰","🥤","🧑‍🍳","Baki wang terlebih"],
+ teacher:["🏫","👧","🏺","👩‍🏫","💬","Farah bercakap benar"],
+ friend:["🌳","🧒","🎒","🧑‍🤝‍🧑","💬","Menjadi rakan yang jujur"],
+ return:["🏫","🧒","📦","🙂","🤲","Barang dipulangkan"],
+ neighbour:["🏘️","🧒","💵","🧑","🤲","Wang jiran dipulangkan"]
+ };
+ const s=scenes[q.scene];
+ return `<div class="scene rounded-3xl border border-white/10">
+   <div class="stars"></div>
+   <div class="relative z-10 flex items-center justify-center gap-4 md:gap-8 flex-wrap">
+    <div class="text-center"><div class="character">${s[1]}</div><div class="text-xs opacity-60 mt-1">${s[5]}</div></div>
+    <div class="text-5xl md:text-6xl">${s[2]}</div>
+    <div class="text-4xl md:text-5xl">${s[3]}</div>
+    <div class="speech hidden md:block">${s[0]} Situasi jujur</div>
+   </div>
+ </div>`;
+}
+
+function start(){
+ sound("click");state={started:true,index:0,score:0,combo:1,streak:0,bestCombo:1,energy:100,answers:[],locked:false};renderQuestion();
+}
+function shuffle(arr){return arr.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1])}
+function renderHome(){
+ $("#screen").innerHTML=`
+ <main class="min-h-screen flex items-center justify-center p-4 md:p-8">
+  <section class="glass glow rounded-[32px] w-full max-w-5xl p-6 md:p-10 fade">
+   <div class="flex items-center justify-between gap-4 mb-10">
+    <div class="brand font-extrabold text-xl"><span class="neon">MORAL</span> QUEST</div>
+    <div class="text-xs smallcaps opacity-60">Pendidikan Moral • Tahun 5</div>
+   </div>
+   <div class="grid lg:grid-cols-[1.15fr_.85fr] gap-8 items-center">
+    <div>
+      <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-cyan-300/10 border border-cyan-200/15 text-cyan-200 text-sm font-bold">🛡️ Moral Guardian</div>
+      <h1 class="text-5xl md:text-7xl font-extrabold leading-[.92] mt-5">MISI<br><span class="neon">KEJUJURAN</span></h1>
+      <p class="text-xl md:text-2xl font-bold mt-4">CABARAN MASYARAKAT</p>
+      <p class="opacity-70 mt-4 max-w-xl">Baca situasi → fikirkan kepentingan → pilih tindakan → nyatakan perasaan → buat refleksi.</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-7">
+       <div class="glass rounded-2xl p-3"><div class="text-2xl">❤️</div><div class="font-bold text-sm">Kejujuran</div></div>
+       <div class="glass rounded-2xl p-3"><div class="text-2xl">🤝</div><div class="font-bold text-sm">Kepercayaan</div></div>
+       <div class="glass rounded-2xl p-3"><div class="text-2xl">🧠</div><div class="font-bold text-sm">Pertimbangan</div></div>
+       <div class="glass rounded-2xl p-3"><div class="text-2xl">😊</div><div class="font-bold text-sm">Perasaan</div></div>
+      </div>
+      <button onclick="showStartModal()" class="btn btn-primary mt-8 px-8 py-4 rounded-2xl font-extrabold text-lg">🚀 MULA MISI</button>
+    </div>
+    <div class="glass rounded-[28px] p-5 md:p-7">
+      <div class="text-xs smallcaps opacity-50">Maklumat misi</div>
+      <div class="mt-4 space-y-4">
+       <div><div class="opacity-50 text-sm">Tema</div><div class="font-extrabold text-xl">Saya dan Masyarakat</div></div>
+       <div><div class="opacity-50 text-sm">Unit</div><div class="font-extrabold text-xl">10. Kejujuran</div></div>
+       <div><div class="opacity-50 text-sm">Standard Pembelajaran</div><div class="font-extrabold text-xl">10.3 & 10.4</div></div>
+       <div class="rounded-2xl bg-cyan-300/5 border border-cyan-200/10 p-4">
+        <div class="font-bold text-cyan-200">Moral Energy</div><div class="meter mt-2"><div class="meter-fill" style="width:100%"></div></div>
+        <div class="text-xs opacity-50 mt-2">Jawapan betul +10% • jawapan salah −5%</div>
+       </div>
+      </div>
+    </div>
+   </div>
+  </section>
+ </main>`;
+}
+function showStartModal(){
+ sound("click");
+ $("#screen").insertAdjacentHTML("beforeend",`<div class="modal" id="startModal">
+ <div class="glass rounded-[32px] p-7 md:p-10 max-w-xl w-full text-center pop">
+  <div class="text-6xl">🛡️</div><h2 class="text-4xl font-extrabold mt-3">MORAL QUEST</h2>
+  <div class="text-2xl font-bold neon">MISI KEJUJURAN</div>
+  <p class="mt-4 opacity-70">Pendidikan Moral Tahun 5</p>
+  <div class="grid grid-cols-2 gap-3 text-left mt-6">
+   <div class="glass rounded-2xl p-4"><div class="text-xs opacity-50">Tema</div><b>Saya dan Masyarakat</b></div>
+   <div class="glass rounded-2xl p-4"><div class="text-xs opacity-50">Unit</div><b>10. Kejujuran</b></div>
+  </div>
+  <div class="text-left mt-6 space-y-2 text-sm">
+   <div>📖 Baca setiap situasi.</div><div>🧠 Fikirkan kepentingan kejujuran.</div><div>🎯 Pilih tindakan yang sesuai.</div><div>❤️ Nyatakan perasaan kamu.</div>
+  </div>
+  <button onclick="document.getElementById('startModal').remove();start()" class="btn btn-primary w-full mt-7 py-4 rounded-2xl font-extrabold text-lg">MULA MISI 🚀</button>
+ </div></div>`);
+}
+
+function header(){
+ const q=questions[state.index], done=state.index;
+ return `<header class="glass sticky top-0 z-30 border-x-0 border-t-0 rounded-none">
+  <div class="max-w-6xl mx-auto px-4 py-3">
+   <div class="flex items-center justify-between gap-3">
+    <div class="brand font-extrabold"><span class="neon">MORAL</span> QUEST</div>
+    <div class="flex items-center gap-2 text-xs md:text-sm">
+      <div class="glass rounded-xl px-3 py-2">⭐ <b id="score">${state.score}</b></div>
+      <div class="glass rounded-xl px-3 py-2">🔥 <b id="combo">×${state.combo}</b></div>
+      <div class="glass rounded-xl px-3 py-2 hidden sm:block">⚡ <b id="energy">${state.energy}%</b></div>
+    </div>
+   </div>
+   <div class="flex items-center gap-3 mt-3">
+    <span class="text-xs font-bold opacity-70">SOALAN ${done+1} / 7</span>
+    <div class="flex-1 progress-line"><div class="progress-fill" style="width:${(done/7)*100}%"></div></div>
+    <div class="flex gap-2">${questions.map((_,i)=>`<i class="node ${i<done?'done':''} ${i===done?'current':''}"></i>`).join("")}</div>
+   </div>
+  </div>
+ </header>`;
+}
+
+function renderQuestion(){
+ const q=questions[state.index];state.locked=false;
+ const choices=q.multi ? q.options.map((text,i)=>({text,i})).sort(()=>Math.random()-.5) : q.options.map((text,i)=>({text,i})).sort(()=>Math.random()-.5);
+ $("#screen").innerHTML=header()+`
+ <main class="max-w-6xl mx-auto p-4 md:p-7 fade">
+  <div class="grid lg:grid-cols-[1fr_1.05fr] gap-5">
+   <section>
+    ${sceneHTML(q)}
+    <div class="glass rounded-3xl p-5 mt-4">
+      <div class="flex flex-wrap gap-2">
+       <span class="px-3 py-1 rounded-full bg-violet-400/10 border border-violet-300/15 text-violet-200 text-xs font-bold">${q.type}</span>
+       <span class="px-3 py-1 rounded-full bg-cyan-300/10 border border-cyan-300/15 text-cyan-200 text-xs font-bold">${q.focus}</span>
+      </div>
+      <h2 class="text-2xl md:text-3xl font-extrabold mt-3">${q.title}</h2>
+      <p class="opacity-75 mt-2 leading-relaxed">${q.situation}</p>
+    </div>
+   </section>
+   <section class="glass rounded-3xl p-5 md:p-7">
+    <div class="text-xs smallcaps text-cyan-200 font-bold">SITUASI → FIKIR → PILIH</div>
+    <h2 class="text-2xl md:text-3xl font-extrabold mt-3 leading-tight">${q.question}</h2>
+    ${q.multi?'<p class="text-sm opacity-55 mt-2">Pilih lebih daripada satu jawapan yang sesuai.</p>':''}
+    <div id="options" class="space-y-3 mt-6">
+     ${choices.map(c=>`<button class="option btn w-full text-left rounded-2xl p-4 flex items-start gap-3 font-bold" onclick="answer(${c.i},this)">
+       <span class="w-8 h-8 shrink-0 rounded-xl bg-white/7 flex items-center justify-center text-cyan-200">${String.fromCharCode(65+c.i)}</span>
+       <span>${c.text}</span>
+     </button>`).join("")}
+    </div>
+    <div id="feedback"></div>
+   </section>
+  </div>
+  <div class="glass rounded-2xl p-4 mt-5 flex items-center gap-4">
+    <div class="text-xl">🤖</div><div><div class="font-extrabold text-sm text-cyan-200">A.I. MORAL</div><div id="aiTip" class="text-sm opacity-70">Baca situasi dengan teliti.</div></div>
+  </div>
+ </main>`;
+}
+function answer(i,btn){
+ if(state.locked)return;
+ const q=questions[state.index];
+ if(q.multi){
+   btn.classList.toggle("ring-2");btn.classList.toggle("ring-cyan-300");
+   const selected=[...document.querySelectorAll("#options button.ring-2")].map(b=>Number(b.querySelector("span").textContent.charCodeAt(0)-65));
+   if(selected.length===0)return;
+   const isSubmit=document.getElementById("submitMulti");
+   if(!isSubmit){
+    document.getElementById("options").insertAdjacentHTML("afterend",`<button id="submitMulti" onclick="submitMulti()" class="btn btn-primary w-full py-3 rounded-2xl font-extrabold mt-4">SAHKAN PILIHAN ✓</button>`);
+   }
+   return;
+ }
+ state.locked=true;finishAnswer(i,btn);
+}
+function submitMulti(){
+ if(state.locked)return;
+ const selected=[...document.querySelectorAll("#options button.ring-2")].map(b=>Number(b.querySelector("span").textContent.charCodeAt(0)-65));
+ if(!selected.length)return;
+ state.locked=true;finishAnswer(selected,null);
+}
+function finishAnswer(given,btn){
+ const q=questions[state.index];
+ const correct=q.multi ? Array.isArray(given)&&given.length===q.answer.length&&given.every(x=>q.answer.includes(x)) : given===q.answer;
+ document.querySelectorAll("#options button").forEach(b=>b.classList.add("disabled"));
+ if(btn)btn.classList.add(correct?"correct":"wrong");
+ if(correct){
+  state.streak++;state.combo=Math.min(5,state.streak+1);state.bestCombo=Math.max(state.bestCombo,state.combo);
+  state.score+=100;state.energy=Math.min(100,state.energy+10);sound(state.combo>2?"combo":"correct");
+ }else{
+  state.streak=0;state.combo=1;state.score=Math.max(0,state.score-20);state.energy=Math.max(0,state.energy-5);sound("wrong");
+ }
+ state.answers.push(correct);
+ $("#score").textContent=state.score;$("#combo").textContent="×"+state.combo;$("#energy").textContent=state.energy+"%";
+ const fb=document.getElementById("feedback");
+ fb.innerHTML=`<div class="mt-5 rounded-2xl p-4 ${correct?'bg-emerald-400/10 border border-emerald-300/20':'bg-rose-400/10 border border-rose-300/20'} fade">
+   <div class="font-extrabold text-lg">${correct?"✅ BETUL!":"❌ CUBA LAGI"}</div>
+   <p class="mt-1 text-sm leading-relaxed">${correct?q.feedback:"Belum tepat. Cuba fikirkan kesan tindakan tersebut terhadap orang lain. "+q.feedback}</p>
+   <div class="mt-4 pt-4 border-t border-white/10"><div class="text-xs smallcaps opacity-50">REFLEKSI</div><div class="font-bold mt-1">${q.reflection}</div></div>
+   <div class="mt-4 flex items-center justify-between gap-3">
+    <div class="text-xs opacity-60">+${correct?100:-20} Moral Points</div>
+    <button onclick="nextQuestion()" class="btn btn-primary px-5 py-3 rounded-xl font-extrabold">${state.index===6?"TAMAT MISI":"SOALAN SETERUSNYA →"}</button>
+   </div>
+ </div>`;
+ document.getElementById("aiTip").textContent=correct?"Bagus! Kamu memahami kepentingan kejujuran.":"Cuba fikir semula tentang kesan tindakan tersebut.";
+ if(correct && state.combo>=2) toast("🔥 COMBO ×"+state.combo);
+}
+function nextQuestion(){
+ sound("transition");
+ if(state.index===6){showVictory();return}
+ state.index++;renderQuestion();
+}
+function toast(msg){
+ const t=document.createElement("div");t.className="toast glass rounded-2xl px-5 py-3 font-extrabold pop";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),1500);
+}
+function showVictory(){
+ sound("win");confetti();
+ const correct=state.answers.filter(Boolean).length;
+ const stars=correct>=6?3:correct>=4?2:1;
+ $("#screen").innerHTML=`<main class="min-h-screen flex items-center justify-center p-4 md:p-8">
+  <section class="glass rounded-[34px] max-w-4xl w-full p-7 md:p-10 text-center fade">
+   <div class="text-sm smallcaps text-cyan-200 font-bold">MISSION COMPLETE!</div>
+   <div class="text-6xl mt-3">🎉</div>
+   <h1 class="text-5xl md:text-6xl font-extrabold mt-2">TAHNIAH!</h1>
+   <p class="opacity-70 mt-2">Kamu telah menyelesaikan Misi Kejujuran.</p>
+   <div class="my-6">${[1,2,3].map(i=>`<span class="star ${i<=stars?'on':''}">⭐</span>`).join("")}</div>
+   <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="glass rounded-2xl p-4"><div class="text-xs opacity-50">SKOR AKHIR</div><div class="text-2xl font-extrabold">${state.score} / 700</div></div>
+    <div class="glass rounded-2xl p-4"><div class="text-xs opacity-50">SOALAN BETUL</div><div class="text-2xl font-extrabold">${correct} / 7</div></div>
+    <div class="glass rounded-2xl p-4"><div class="text-xs opacity-50">COMBO TERTINGGI</div><div class="text-2xl font-extrabold">×${state.bestCombo}</div></div>
+    <div class="glass rounded-2xl p-4"><div class="text-xs opacity-50">MORAL ENERGY</div><div class="text-2xl font-extrabold">${state.energy}%</div></div>
+   </div>
+   <div class="glass rounded-3xl p-5 text-left mt-6">
+    <h2 class="text-2xl font-extrabold">❤️ APA YANG KITA PELAJARI?</h2>
+    <div class="grid md:grid-cols-2 gap-2 mt-3 text-sm">
+      <div>✓ Membina kepercayaan</div><div>✓ Menghormati hak orang lain</div>
+      <div>✓ Menjaga hubungan yang baik</div><div>✓ Mewujudkan masyarakat harmoni</div>
+      <div>✓ Berasa lega dan bangga apabila melakukan perkara yang betul</div>
+    </div>
+   </div>
+   <div class="glass rounded-3xl p-5 mt-5">
+    <div class="font-extrabold">“Apakah perasaan kamu selepas menyelesaikan misi ini?”</div>
+    <div class="flex flex-wrap justify-center gap-2 mt-3">
+     ${["😊 Gembira","😌 Lega","💪 Bangga","❤️ Puas hati","🤔 Lebih sedar"].map(x=>`<span class="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm">${x}</span>`).join("")}
+    </div>
+    <p class="neon font-extrabold text-xl mt-5">Kejujuran bermula daripada diri sendiri.</p>
+   </div>
+   <div class="flex flex-col sm:flex-row gap-3 mt-7">
+    <button onclick="start()" class="btn btn-primary flex-1 py-4 rounded-2xl font-extrabold">🔄 MAIN SEMULA</button>
+    <button onclick="showReview()" class="btn btn-secondary flex-1 py-4 rounded-2xl font-extrabold">📚 ULANG KAJI</button>
+    <button onclick="renderHome()" class="btn btn-secondary flex-1 py-4 rounded-2xl font-extrabold">🏠 MENU UTAMA</button>
+   </div>
+  </section>
+ </main>`;
+}
+function showReview(){
+ $("#screen").innerHTML=`<main class="min-h-screen p-4 md:p-8">
+ <section class="glass rounded-[32px] max-w-4xl mx-auto p-6 md:p-9 fade">
+  <div class="flex items-center justify-between gap-3"><div><div class="text-xs smallcaps opacity-50">ULANG KAJI</div><h1 class="text-4xl font-extrabold">Apa yang kita pelajari?</h1></div><button onclick="showVictory()" class="btn btn-secondary px-4 py-2 rounded-xl">← Kembali</button></div>
+  <div class="grid md:grid-cols-2 gap-4 mt-6">
+   ${[
+    ["❤️","Kepentingan kejujuran","Kejujuran membantu membina kepercayaan dalam masyarakat."],
+    ["🤝","Kepercayaan","Orang lain lebih mudah mempercayai kita apabila kita jujur."],
+    ["⚖️","Hak orang lain","Bersikap jujur membantu kita menghormati hak orang lain."],
+    ["😊","Perasaan","Kita boleh berasa gembira, lega dan bangga apabila melakukan perkara yang jujur."],
+    ["🏘️","Kehidupan bermasyarakat","Kejujuran membantu menjaga hubungan yang baik dan keharmonian masyarakat."]
+   ].map(x=>`<div class="glass rounded-2xl p-5"><div class="text-3xl">${x[0]}</div><div class="font-extrabold text-xl mt-2">${x[1]}</div><p class="opacity-65 mt-1">${x[2]}</p></div>`).join("")}
+  </div>
+ </section></main>`;
+}
+function confetti(){
+ const c=document.createElement("div");c.className="confetti";
+ for(let i=0;i<80;i++){const p=document.createElement("i");p.style.left=Math.random()*100+"%";p.style.setProperty("--x",(Math.random()*240-120)+"px");p.style.animationDelay=(Math.random()*.9)+"s";p.style.background=["#67e8f9","#a78bfa","#facc15","#34d399","#fb7185"][i%5];c.appendChild(p)}
+ document.body.appendChild(c);setTimeout(()=>c.remove(),3500);
+}
+renderHome();
+</script>
+</body>
+</html>
